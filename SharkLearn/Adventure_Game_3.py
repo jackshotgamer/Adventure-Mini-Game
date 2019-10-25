@@ -1,16 +1,16 @@
 import random
 import time
 import sys
-from SharkLearn.AdventureLevels import jacklevel, Sharkboundlevel, Psuedolevel, Annalevel
-from SharkLearn.Classes2 import RandomPos, pl2, pl1, pl3, pl4, SizeAndPos, Position, start_pos, Levels
+from AGLevels import jacklevel, Sharkboundlevel, Psuedolevel, Annalevel, jackgold, Sharkboundgold, Psuedogold, Annagold
+from Classes import RandomPos, pl2, pl1, pl3, pl4, SizeAndPos, Position, start_pos, Levels, Gold
 
 # Player Selection
 
 player_selection = input("Select the number of a player:\n\t\033[1;34;10m"
-                             "1.\033[0;10m jack\n\t\033[1;34;10m"
-                             "2.\033[0;10m Sharkbound\n\t\033[1;34;10m"
-                             "3.\033[0;10m Psuedo\n\t\033[1;34;10m"
-                             "4.\033[0;10m Anna\n> ")
+                         "1.\033[0;10m jack\n\t\033[1;34;10m"
+                         "2.\033[0;10m Sharkbound\n\t\033[1;34;10m"
+                         "3.\033[0;10m Psuedo\n\t\033[1;34;10m"
+                         "4.\033[0;10m Anna\n> ")
 if player_selection == '1':
     player_level = jacklevel
     player = pl1
@@ -38,6 +38,12 @@ print('You wake up in a dark room, with very faint torches on the walls, you sta
       )
 time.sleep(1)
 print(f'You are level {player_level}')
+
+exit_chance = (
+    1,
+    1,
+    0
+)
 
 # Controls
 
@@ -124,30 +130,48 @@ def touch_trap():
 
 def touch_trapdoor():
     if player.position.x == trapdoor_position1.x_pos_random and player.position.y == trapdoor_position1.y_pos_random:
-        if player.position.x != trap_position.x_pos_random and player.position.y != trap_position.y_pos_random:
-            print('You found the trapdoor to the next level. Congratulations')
+        print('Pos1')
+        print('You found the trapdoor to the next level. Congratulations')
+        exit_ = random.choice(exit_chance)
+        if exit_ == 1:
             print(f'You have completed level {player_level}! Hooray! You are now level {player_level + 1}')
             player.level += 1
-            levels.open_trapdoor(player.level, player.name)
+            levels.gain_level()
             sys.exit(100)
-        elif player.position.x == trapdoor_position2.x_pos_random and player.position.y == trapdoor_position2.y_pos_random:
-            if player.position.x != trap_position.x_pos_random and player.position.y != trap_position.y_pos_random:
-                print('You found the trapdoor to the next level. Congratulations')
-                print(f'You have completed level {player_level}! Hooray! You are now level {player_level + 1}')
-                player.level += 1
-                levels.open_trapdoor(player.level, player.name)
-                sys.exit(100)
+        elif exit_ == 0:
+            print(f'But you fumbled and fell in head first, you cracked your skull!')
+            print('\tYOU\033[31;10m DIED!\033[30;0m ')
+            sys.exit(-100)
+    # elif player.position.x == trapdoor_position2.x_pos_random and player.position.y == trapdoor_position2.y_pos_random and player.position.x != trap_position.x_pos_random and player.position.y != trap_position.y_pos_random:
+    #     print('Pos2')
+    #     print('You found the trapdoor to the next level. Congratulations')
+    #     exit_ = random.choice(exit_chance)
+    #     if exit_ == 1:
+    #         print(f'You have completed level {player_level}! Hooray! You are now level {player_level + 1}')
+    #         player.level += 1
+    #         levels.gain_level()
+    #         sys.exit(100)
+    #     elif exit_ == 0:
+    #         print(f'But you fumbled and fell in head first, you cracked your skull!')
+    #         print('\tYOU\033[31;10m DIED!\033[30;0m ')
+    #         sys.exit(-100)
+    # elif player.position.x == trapdoor_position3.x_pos_random and player.position.y == trapdoor_position3.y_pos_random and player.position.x != trap_position.x_pos_random and player.position.y != trap_position.y_pos_random:
+    #     print('Pos3')
+    #     print('You found the trapdoor to the next level. Congratulations')
+    #     exit_ = random.choice(exit_chance)
+    #     if exit_ == 1:
+    #         print(f'You have completed level {player_level}! Hooray! You are now level {player_level + 1}')
+    #         player.level += 1
+    #         levels.gain_level()
+    #         sys.exit(100)
+    #     elif exit_ == 0:
+    #         print(f'But you fumbled and fell in head first, you cracked your skull!')
+    #         print('\tYOU\033[31;10m DIED!\033[30;0m ')
+    #         sys.exit(-100)
 
-            elif player.position.x == trapdoor_position3.x_pos_random and player.position.y == trapdoor_position3.y_pos_random:
-                if player.position.x != trap_position.x_pos_random and player.position.y != trap_position.y_pos_random:
-                    print('You found the trapdoor to the next level. Congratulations')
-                    print(f'You have completed level {player_level}! Hooray! You are now level {player_level + 1}')
-                    player.level += 1
-                    levels.open_trapdoor(player.level, player.name)
-                    sys.exit(100)
 
-
-# print(f'{trapdoor_position1.x_pos_random}, {trapdoor_position1.y_pos_random} and {trapdoor_position2.x_pos_random}, {trapdoor_position2.y_pos_random} and {trapdoor_position3.x_pos_random}, {trapdoor_position3.y_pos_random}')
+print(f'{trapdoor_position1.x_pos_random}, {trapdoor_position1.y_pos_random} and {trapdoor_position2.x_pos_random}, '
+      f'{trapdoor_position2.y_pos_random} and {trapdoor_position3.x_pos_random}, {trapdoor_position3.y_pos_random}')
 print(f'The room is {temp}, {brightness}, and there might be a trap!')
 print(
     f'\nYou start in a room that is\033[32;10m {start_pos.size_of_room}\033[30;0m tiles wide and\033[32;10m {start_pos.size_of_room}\033[30;0m tiles high \n'
