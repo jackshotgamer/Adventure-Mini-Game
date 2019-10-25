@@ -1,8 +1,12 @@
-jacklevel = 1
-Sharkboundlevel = 1
-Psuedolevel = 2
-Annalevel = 1
-jackgold = 0
-Sharkboundgold = 0
-Psuedogold = 0
-Annagold = 0
+import json
+import os
+
+
+if not os.path.exists('saved_data.txt'):
+    with open('saved_data.txt', 'w') as saved_data:
+        saved_data.write('[0, 0, 1]')
+with open('saved_data.txt', 'r') as saved_data1:
+    data = json.load(saved_data1)
+    globallevel = data[0]
+    globalgold = data[1]
+    globalxp = data[2]
