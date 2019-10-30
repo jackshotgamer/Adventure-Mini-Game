@@ -4,7 +4,7 @@ import os
 
 if not os.path.exists('saved_data.txt'):
     with open('saved_data.txt', 'w') as saved_data:
-        saved_data.write('[0, 0, 1]')
+        saved_data.write('[1, 0, 0]')
 with open('saved_data.txt', 'r') as saved_data1:
     data = json.load(saved_data1)
     globallevel = data[0]

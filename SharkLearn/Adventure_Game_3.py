@@ -2,7 +2,7 @@ import random
 import time
 import sys
 from SharkLearn import AdventureLevels
-from SharkLearn.Classes import RandomPos, pl2, pl1, pl3, pl4, SizeAndPos, Position, start_pos
+from SharkLearn.Classes import RandomPos, pl2, pl1, pl3, pl4, SizeAndPos, Position, start_pos, Trap, Trapdoor
 import json
 
 list_of_positions = []
@@ -52,20 +52,15 @@ print('You wake up in a dark room, with very faint torches on the walls, you sta
       ' and walk through the door-frame in-front of you.....'
       )
 time.sleep(1)
-print(f'You are level {player_level}, you have {AdventureLevels.globalgold} gold, and your xp count is {AdventureLevels.globalxp}')
-
-exit_chance = (
-    1,
-    1,
-    0
-)
+print(
+    f'You are level {player_level}, you have {AdventureLevels.globalgold} gold, and your xp count is {AdventureLevels.globalxp}')
 
 # Controls
 
 print('\nThe controls are\033[34;10m w\033[30;0m (up),\033[34;10m a\033[30;0m (left),'
       '\033[34;10m s\033[30;0m (down),\033[34;10m d\033[30;0m (right) '
       'and\033[34;10m /size\033[30;0m (gets room size)\n')
-time.sleep(0.5)
+time.sleep(1.9)
 
 # Gold Code
 
@@ -80,32 +75,33 @@ gold_possibilities = (
     150
 )
 
-xp_possibilities = (
-    1,
+# Enemy Code
+
+enemy_possibilities_health = (
+    10,
+    20,
+    30,
+    40,
+    50
+)
+enemy_health = random.choice(enemy_possibilities_health)
+
+enemy_possibilities_attack = (
     2,
     3,
-    4,
-    5
+    5,
+    6
 )
+enemy_attack = random.choice(enemy_possibilities_attack)
 
-
-# Trap Code
-
-traps = (
-    'fell into a pit trap!',
-    'stepped onto a pressure plate, which shot down spikes from the ceiling!',
-    'activated a trip wire, which proceeded to shoot spikes from the walls',
-    'opened a booby-trapped trapdoor, with explosives!'
+enemy_possibilities_names = (
+    'Ogre',
+    'Dragon',
+    'Troll',
+    'Zombie',
+    'Super-Mob'
 )
-
-escape_chance = (
-    1,
-    1,
-    1,
-    0
-)
-
-trap = random.choice(traps)
+enemy_name = random.choice(enemy_possibilities_names)
 
 # Temperature
 
@@ -138,54 +134,35 @@ brightness = random.choice(brights)
 
 # Room Code
 
-trap_position = random_pos(start_pos.size_of_room)
-trapdoor_position1 = random_pos(start_pos.size_of_room)
+tiles = [Trap(*random_pos(start_pos.size_of_room).position.position),
+         Trapdoor(*random_pos(start_pos.size_of_room).position.position)]
 
 
-def touch_wall():
+enemy_position = random_pos(start_pos.size_of_room)
+
+
+def touch_enemy():
+    if player.position == enemy_position.position:
+        print(
+            f'You found a {enemy_name}, it has {str(enemy_health)} health and can deal {" or ".join(map(str, enemy_possibilities_attack))} damage')
+
+
+def on_move():
     if player.position.x == start_pos.size_of_room + 1 or player.position.y == start_pos.size_of_room + 1:
         print('\nYou touched the spike walls.\n\033[31;10m YOU DIED!')
         sys.exit(15)
     if player.position.x == -1 or player.position.y == -1:
         print('\nYou touched the spike walls.\n\033[31;10m YOU DIED!')
         sys.exit(15)
+    for x in tiles:
+        if player.position == x.position:
+            x.on_enter(player.name)
+    touch_enemy()
+    print(
+        f'\033[30;0m You are now x: \033[32;10m{player.position.x}\033[30;0m, y: \033[32;10m{player.position.y}\033[30;0m')
 
 
-def touch_trap():
-    if player.position == trap_position.position:
-        print(f'You {trap}')
-        escape = random.choice(escape_chance)
-        if escape == 0:
-            print('\tBut you\033[32;10m ESCAPED!')
-        elif escape == 1:
-            print('\tYOU\033[31;10m DIED!')
-            sys.exit(15)
-
-
-def touch_trapdoor():
-    if player.position == trapdoor_position1.position:
-        print('You found the trapdoor to the next level. Congratulations')
-        exit_ = random.choice(exit_chance)
-        if exit_ == 1:
-            xp_gained = random.choices(xp_possibilities, weights=(14, 10, 5, 3, 1), k=2)
-            AdventureLevels.globallevel += sum(xp_gained)
-
-            saved_data = (
-                AdventureLevels.globallevel,
-                AdventureLevels.globalgold,
-                AdventureLevels.globalxp
-            )
-            with open('saved_data.txt', 'w') as file1:
-                file1.write(json.dumps(saved_data))
-            print(f'You gain {sum(xp_gained)} xp, you now have {AdventureLevels.globallevel} xp.')
-            sys.exit(100)
-        elif exit_ == 0:
-            print(f'But you fumbled and fell in head first, you cracked your skull!')
-            print('\tYOU\033[31;10m DIED!\033[30;0m ')
-            sys.exit(-100)
-
-
-print(f'{trapdoor_position1.position}')
+print(f'{tiles[1].position}')
 print(f'The room is {temp}, {brightness}, and there might be a trap!')
 print(
     f'\nYou start in a room that is\033[32;10m {start_pos.size_of_room}\033[30;0m tiles wide and\033[32;10m {start_pos.size_of_room}\033[30;0m tiles high \n'
@@ -218,32 +195,13 @@ while in_room:
 
     if direction1 == 'w':
         player.position.move_up()
-        touch_wall()
-        touch_trap()
-        touch_trapdoor()
-        print(
-            f'\033[30;0m You are now x: \033[32;10m{player.position.x}\033[30;0m, y: \033[32;10m{player.position.y}\033[30;0m')
 
     elif direction1 == 's':
         player.position.move_down()
-        touch_wall()
-        touch_trap()
-        touch_trapdoor()
-        print(
-            f'\033[30;0m You are now x: \033[32;10m{player.position.x}\033[30;0m, y: \033[32;10m{player.position.y}\033[30;0m')
 
     elif direction1 == 'a':
         player.position.move_left()
-        touch_wall()
-        touch_trap()
-        touch_trapdoor()
-        print(
-            f'\033[30;0m You are now x: \033[32;10m{player.position.x}\033[30;0m, y: \033[32;10m{player.position.y}\033[30;0m')
 
     elif direction1 == 'd':
         player.position.move_right()
-        touch_wall()
-        touch_trap()
-        touch_trapdoor()
-        print(
-            f'\033[30;0m You are now x: \033[32;10m{player.position.x}\033[30;0m, y: \033[32;10m{player.position.y}\033[30;0m')
+    on_move()
