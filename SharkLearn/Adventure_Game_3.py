@@ -2,7 +2,7 @@ import random
 import time
 import sys
 from SharkLearn import AdventureLevels
-from SharkLearn.Classes import RandomPos, pl2, pl1, pl3, pl4, SizeAndPos, Position, start_pos, Trap, Trapdoor
+from SharkLearn.Classes import RandomPos, pl2, pl1, pl3, pl4, SizeAndPos, Position, start_pos, Trap, Trapdoor, Enemy
 import json
 
 list_of_positions = []
@@ -77,31 +77,6 @@ gold_possibilities = (
 
 # Enemy Code
 
-enemy_possibilities_health = (
-    10,
-    20,
-    30,
-    40,
-    50
-)
-enemy_health = random.choice(enemy_possibilities_health)
-
-enemy_possibilities_attack = (
-    2,
-    3,
-    5,
-    6
-)
-enemy_attack = random.choice(enemy_possibilities_attack)
-
-enemy_possibilities_names = (
-    'Ogre',
-    'Dragon',
-    'Troll',
-    'Zombie',
-    'Super-Mob'
-)
-enemy_name = random.choice(enemy_possibilities_names)
 
 # Temperature
 
@@ -135,16 +110,9 @@ brightness = random.choice(brights)
 # Room Code
 
 tiles = [Trap(*random_pos(start_pos.size_of_room).position.position),
-         Trapdoor(*random_pos(start_pos.size_of_room).position.position)]
-
-
-enemy_position = random_pos(start_pos.size_of_room)
-
-
-def touch_enemy():
-    if player.position == enemy_position.position:
-        print(
-            f'You found a {enemy_name}, it has {str(enemy_health)} health and can deal {" or ".join(map(str, enemy_possibilities_attack))} damage')
+         Trapdoor(*random_pos(start_pos.size_of_room).position.position),
+         Enemy(*random_pos(start_pos.size_of_room).position.position),
+         Enemy(*random_pos(start_pos.size_of_room).position.position)]
 
 
 def on_move():
@@ -157,9 +125,9 @@ def on_move():
     for x in tiles:
         if player.position == x.position:
             x.on_enter(player.name)
-    touch_enemy()
     print(
-        f'\033[30;0m You are now x: \033[32;10m{player.position.x}\033[30;0m, y: \033[32;10m{player.position.y}\033[30;0m')
+        f'\033[30;0m You are now x: \033[32;10m{player.position.x}\033[30;0m, y: \033[32;10m{player.position.y}'
+        f'\033[30;0m')
 
 
 print(f'{tiles[1].position}')

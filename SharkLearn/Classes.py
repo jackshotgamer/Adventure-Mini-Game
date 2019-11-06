@@ -5,6 +5,36 @@ import time
 import sys
 import json
 
+enemy_possibilities_names = (
+    'Ogre',
+    'Dragon',
+    'Troll',
+    'Zombie',
+    'Mutated Monster',
+    'Goblin',
+    'Gremlin Child'
+)
+
+enemy_possibilities_attack = (
+    2,
+    3,
+    5,
+    7
+)
+
+
+enemy_possibilities_health = (
+    50,
+    50
+)
+
+death_possibilities = (
+    'But with your final breath, you lunged at the {}, finally killing it, you lie down, and go to sleep, forever.',
+    'But as your eyes were closing for the final time, you saw the {} impale itself on a spike by accident.',
+    'But the reason you died is because you killed the {}, and it fell on top of you, crushing you instantly',
+    'But your ghost scared the {} so much, it died from a heart attack!'
+)
+
 traps = (
     'fell into a pit trap!',
     'stepped onto a pressure plate, which shot down spikes from the ceiling!',
@@ -65,6 +95,33 @@ class Trap(Tile):
         elif escape == 1:
             print('\tYOU\033[31;10m DIED!')
             sys.exit(15)
+
+
+class Enemy(Tile):
+    def on_enter(self, name):
+        enemy_health = random.choice(enemy_possibilities_health)
+        enemy_name = random.choice(enemy_possibilities_names)
+        print(
+            f'You found a {enemy_name}, it has {str(enemy_health)} health and can deal '
+            f'{" or ".join(map(str, enemy_possibilities_attack))} damage')
+        player_health = 50
+        while enemy_health > 0:
+            player_attack = random.randint(7, 7)
+            enemy_attack = random.randint(7, 7)
+            time.sleep(1.5)
+            player_health -= enemy_attack
+            enemy_health -= player_attack
+            print(f'You did {player_attack} damage, but received {enemy_attack} in return!\n'
+                  f'You now have {player_health}, the {enemy_name} has {enemy_health}!\n')
+            time.sleep(1)
+            if player_health <= 0 and enemy_health <= 0:
+                print(f'\033[31;10m You died\033[30;0m \n{random.choice(death_possibilities).format(enemy_name)}')
+                sys.exit(15)
+            elif player_health <= 0:
+                print('AAGGHHHHhhhhhh...... \n'
+                      '\033[31;10m You died \033[30;0m ')
+                sys.exit(15)
+        print(f'You killed the {enemy_name}, congratulation! Keep looking for the exit.')
 
 
 class Trapdoor(Tile):
