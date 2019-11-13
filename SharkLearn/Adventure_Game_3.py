@@ -2,8 +2,7 @@ import random
 import time
 import sys
 from SharkLearn import AdventureLevels
-from SharkLearn.Classes import RandomPos, pl2, pl1, pl3, pl4, SizeAndPos, Position, start_pos, Trap, Trapdoor, Enemy
-import json
+from SharkLearn.Classes import RandomPos, pl2, pl1, pl3, pl4, start_pos, Trap, Trapdoor, Enemy, Loot
 
 list_of_positions = []
 
@@ -53,30 +52,17 @@ print('You wake up in a dark room, with very faint torches on the walls, you sta
       )
 time.sleep(1)
 print(
-    f'You are level {player_level}, you have {AdventureLevels.globalgold} gold, and your xp count is {AdventureLevels.globalxp}')
+    f'You are level {player_level}, you have {AdventureLevels.globalgold} gold, and your xp count is '
+    f'{AdventureLevels.globalxp}')
 
 # Controls
 
-print('\nThe controls are\033[34;10m w\033[30;0m (up),\033[34;10m a\033[30;0m (left),'
-      '\033[34;10m s\033[30;0m (down),\033[34;10m d\033[30;0m (right) '
-      'and\033[34;10m /size\033[30;0m (gets room size)\n')
-time.sleep(1.9)
-
-# Gold Code
-
-gold_possibilities = (
-    5,
-    10,
-    15,
-    25,
-    50,
-    75,
-    100,
-    150
-)
-
-# Enemy Code
-
+print('\nThe controls are: \n\033[34;10m w\033[30;0m (up),\033[34;10m a\033[30;0m (left),'
+      '\033[34;10m s\033[30;0m (down),\033[34;10m d\033[30;0m (right) \n'
+      '\nThe commands you can use are: \n\033[34;10m /size\033[30;0m (Gets room size)\n'
+      '\033[34;10m /help\033[30;0m (Shows the commands)\n'
+      '\033[34;10m /positions\033[30;0m (Lists the random positions)\n')
+time.sleep(2.3)
 
 # Temperature
 
@@ -95,14 +81,15 @@ temp = random.choice(temps)
 # Brightness
 
 brights = (
-    'dim',
-    'dim',
-    'dim',
-    'dim',
     'bright',
     'bright',
     'bright',
-    'just about see-able'
+    'bright',
+    'bright',
+    'dim',
+    'dim',
+    'dim',
+    'pitch black'
 )
 
 brightness = random.choice(brights)
@@ -110,9 +97,15 @@ brightness = random.choice(brights)
 # Room Code
 
 tiles = [Trap(*random_pos(start_pos.size_of_room).position.position),
+         Trap(*random_pos(start_pos.size_of_room).position.position),
+         Trap(*random_pos(start_pos.size_of_room).position.position),
          Trapdoor(*random_pos(start_pos.size_of_room).position.position),
          Enemy(*random_pos(start_pos.size_of_room).position.position),
-         Enemy(*random_pos(start_pos.size_of_room).position.position)]
+         Enemy(*random_pos(start_pos.size_of_room).position.position),
+         Enemy(*random_pos(start_pos.size_of_room).position.position),
+         Loot(*random_pos(start_pos.size_of_room).position.position),
+         Loot(*random_pos(start_pos.size_of_room).position.position),
+         Loot(*random_pos(start_pos.size_of_room).position.position)]
 
 
 def on_move():
@@ -130,37 +123,135 @@ def on_move():
         f'\033[30;0m')
 
 
-print(f'{tiles[1].position}')
-print(f'The room is {temp}, {brightness}, and there might be a trap!')
+print(f'The room is {temp}, {brightness}, and there might be a trap!\n')
+if brightness == 'bright':
+    print('The positions of random things are: ')
+    print(", ".join(map(str, list_of_positions)))
+else:
+    print(f'The room is {brightness}, making it impossible to see anything of interest')
 print(
-    f'\nYou start in a room that is\033[32;10m {start_pos.size_of_room}\033[30;0m tiles wide and\033[32;10m {start_pos.size_of_room}\033[30;0m tiles high \n'
-    f'Your starting position is x: \033[32;10m{start_pos.starting_x}\033[30;0m, and y: \033[32;10m{start_pos.starting_y}.\033[30;0m \n'
+    f'\nYou start in a room that is\033[32;10m {start_pos.size_of_room}\033[30;0m tiles wide and\033[32;10m'
+    f' {start_pos.size_of_room}\033[30;0m tiles high \n'
+    f'Your starting position is x: \033[32;10m{start_pos.starting_x}\033[30;0m, and y: '
+    f'\033[32;10m{start_pos.starting_y}.\033[30;0m \n'
     f'You can go from\033[32;10m 0 to {start_pos.size_of_room}\033[30;0m in any direction.\n')
-print(list_of_positions)
+moves = 0
 in_room = True
 while in_room:
     w_a_s_d = input('Enter a control: ')
     if w_a_s_d == 'w':
         print(f'\nYou chose up')
         direction1 = 'w'
+        if temp == 'freezing':
+            moves += 1
+            area = int(start_pos.size_of_room * start_pos.size_of_room) // 4
+            print(f'Since the room is {temp}, you have {area - moves} moves left before the '
+                  f'temperature kills you!')
+            if moves >= int(start_pos.size_of_room * start_pos.size_of_room) // 4:
+                print(f'Out of moves, you succumbed to the {temp} temperature')
+                sys.exit(20)
+        elif temp == 'boiling':
+            moves += 1
+            area = int(start_pos.size_of_room * start_pos.size_of_room) // 4
+            print(f'Since the room is {temp}, you have {area - moves} moves left before the '
+                  f'temperature kills you!')
+            if moves >= int(start_pos.size_of_room * start_pos.size_of_room) // 4:
+                print(f'Out of moves, you succumbed to the {temp} temperature')
+                sys.exit(20)
     elif w_a_s_d == 'a':
         print(f'\nYou chose left')
         direction1 = 'a'
+        if temp == 'freezing':
+            moves += 1
+            area = int(start_pos.size_of_room * start_pos.size_of_room) // 4
+            print(f'Since the room is {temp}, you have {area - moves} moves left before the '
+                  f'temperature kills you!')
+            if moves >= int(start_pos.size_of_room * start_pos.size_of_room) // 4:
+                print(f'Out of moves, you succumbed to the {temp} temperature')
+                sys.exit(20)
+        elif temp == 'boiling':
+            moves += 1
+            area = int(start_pos.size_of_room * start_pos.size_of_room) // 4
+            print(f'Since the room is {temp}, you have {area - moves} moves left before the '
+                  f'temperature kills you!')
+            if moves >= int(start_pos.size_of_room * start_pos.size_of_room) // 4:
+                print(f'Out of moves, you succumbed to the {temp} temperature')
+                sys.exit(20)
     elif w_a_s_d == 's':
         print(f'\nYou chose down')
         direction1 = 's'
+        if temp == 'freezing':
+            moves += 1
+            area = int(start_pos.size_of_room * start_pos.size_of_room) // 4
+            print(f'Since the room is {temp}, you have {area - moves} moves left before the '
+                  f'temperature kills you!')
+            if moves >= int(start_pos.size_of_room * start_pos.size_of_room) // 4:
+                print(f'Out of moves, you succumbed to the {temp} temperature')
+                sys.exit(20)
+        elif temp == 'boiling':
+            moves += 1
+            area = int(start_pos.size_of_room * start_pos.size_of_room) // 4
+            print(f'Since the room is {temp}, you have {area - moves} moves left before the '
+                  f'temperature kills you!')
+            if moves >= int(start_pos.size_of_room * start_pos.size_of_room) // 4:
+                print(f'Out of moves, you succumbed to the {temp} temperature')
+                sys.exit(20)
     elif w_a_s_d == 'd':
         print(f'\nYou chose right')
         direction1 = 'd'
+        if temp == 'freezing':
+            moves += 1
+            area = int(start_pos.size_of_room * start_pos.size_of_room) // 4
+            print(f'Since the room is {temp}, you have {area - moves} moves left before the '
+                  f'temperature kills you!')
+            if moves >= int(start_pos.size_of_room * start_pos.size_of_room) // 4:
+                print(f'Out of moves, you succumbed to the {temp} temperature')
+                sys.exit(20)
+        elif temp == 'boiling':
+            moves += 1
+            area = int(start_pos.size_of_room * start_pos.size_of_room) // 4
+            print(f'Since the room is {temp}, you have {area - moves} moves left before the '
+                  f'temperature kills you!')
+            if moves >= int(start_pos.size_of_room * start_pos.size_of_room) // 4:
+                print(f'Out of moves, you succumbed to the {temp} temperature')
+                sys.exit(20)
     elif w_a_s_d == '/size':
         print(
             f'The room size is \033[32;10m{start_pos.size_of_room}\033[30;0m wide and \033[32;10m{start_pos.size_of_room}\033[30;0m high.')
+        print(
+            f'\033[30;0m You are now x: \033[32;10m{player.position.x}\033[30;0m, y: \033[32;10m{player.position.y}'
+            f'\033[30;0m')
+        continue
+    elif w_a_s_d == '/help':
+        print('\nThe controls are: \n\033[34;10m w\033[30;0m (up),\033[34;10m a\033[30;0m (left),'
+              '\033[34;10m s\033[30;0m (down),\033[34;10m d\033[30;0m (right)'
+              '\nThe commands you can use are: \n\033[34;10m /size\033[30;0m (Gets room size)'
+              '\033[34;10m /help\033[30;0m (Shows the commands)\n'
+              '\033[34;10m /positions\033[30;0m (Lists the random positions)\n')
+        print(
+            f'\033[30;0m You are now x: \033[32;10m{player.position.x}\033[30;0m, y: \033[32;10m{player.position.y}'
+            f'\033[30;0m')
+        continue
+    elif w_a_s_d == '/positions':
+        if brightness == 'bright':
+            print('\nThe positions of random things are: ')
+            print(", ".join(map(str, list_of_positions)), '\n')
+            print(
+                f'\033[30;0m You are now x: \033[32;10m{player.position.x}\033[30;0m, y: \033[32;10m{player.position.y}'
+                f'\033[30;0m')
+        else:
+            print(f'The room is {brightness}, and you cannot make out anything')
+            print(
+                f'\033[30;0m You are now x: \033[32;10m{player.position.x}\033[30;0m, y: \033[32;10m{player.position.y}'
+                f'\033[30;0m')
         continue
     else:
         print('\nInvalid Control')
+        print(
+            f'\033[30;0m You are now x: \033[32;10m{player.position.x}\033[30;0m, y: \033[32;10m{player.position.y}'
+            f'\033[30;0m')
         continue
     # if choosing
-
     if direction1 == 'w':
         player.position.move_up()
 
