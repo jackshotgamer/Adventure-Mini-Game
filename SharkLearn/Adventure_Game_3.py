@@ -2,7 +2,7 @@ import random
 import time
 import sys
 from SharkLearn import AdventureLevels
-from SharkLearn.Classes import RandomPos, pl2, pl1, pl3, pl4, start_pos, Trap, Trapdoor, Enemy, Loot
+from SharkLearn.Classes import RandomPos, pl2, pl1, pl3, pl4, start_pos, Trap, Trapdoor, Enemy, Loot, Shop
 
 list_of_positions = []
 
@@ -14,7 +14,7 @@ def random_pos(size_of_rooms):
             continue
         else:
             list_of_positions.append(random_p.position)
-            # random.shuffle(list_of_positions)
+            random.shuffle(list_of_positions)
             return random_p
 
 
@@ -76,6 +76,7 @@ temps = (
     'freezing',
     'boiling',
 )
+
 temp = random.choice(temps)
 
 # Brightness
@@ -96,16 +97,57 @@ brightness = random.choice(brights)
 
 # Room Code
 
-tiles = [Trap(*random_pos(start_pos.size_of_room).position.position),
-         Trap(*random_pos(start_pos.size_of_room).position.position),
-         Trap(*random_pos(start_pos.size_of_room).position.position),
-         Trapdoor(*random_pos(start_pos.size_of_room).position.position),
-         Enemy(*random_pos(start_pos.size_of_room).position.position),
-         Enemy(*random_pos(start_pos.size_of_room).position.position),
-         Enemy(*random_pos(start_pos.size_of_room).position.position),
-         Loot(*random_pos(start_pos.size_of_room).position.position),
-         Loot(*random_pos(start_pos.size_of_room).position.position),
-         Loot(*random_pos(start_pos.size_of_room).position.position)]
+if player.level <= 5:
+    tiles = [Trap(*random_pos(start_pos.size_of_room).position.position),
+             Trap(*random_pos(start_pos.size_of_room).position.position),
+             Trap(*random_pos(start_pos.size_of_room).position.position),
+             Trapdoor(*random_pos(start_pos.size_of_room).position.position),
+             Enemy(*random_pos(start_pos.size_of_room).position.position),
+             Enemy(*random_pos(start_pos.size_of_room).position.position),
+             Enemy(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Shop(*random_pos(start_pos.size_of_room).position.position),
+             Shop(*random_pos(start_pos.size_of_room).position.position)]
+elif player.level <= 10:
+    tiles = [Trap(*random_pos(start_pos.size_of_room).position.position),
+             Trap(*random_pos(start_pos.size_of_room).position.position),
+             Trap(*random_pos(start_pos.size_of_room).position.position),
+             Trap(*random_pos(start_pos.size_of_room).position.position),
+             Trapdoor(*random_pos(start_pos.size_of_room).position.position),
+             Enemy(*random_pos(start_pos.size_of_room).position.position),
+             Enemy(*random_pos(start_pos.size_of_room).position.position),
+             Enemy(*random_pos(start_pos.size_of_room).position.position),
+             Enemy(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Shop(*random_pos(start_pos.size_of_room).position.position),
+             Shop(*random_pos(start_pos.size_of_room).position.position)]
+elif player.level <= 20:
+    tiles = [Trap(*random_pos(start_pos.size_of_room).position.position),
+             Trap(*random_pos(start_pos.size_of_room).position.position),
+             Trap(*random_pos(start_pos.size_of_room).position.position),
+             Trap(*random_pos(start_pos.size_of_room).position.position),
+             Trap(*random_pos(start_pos.size_of_room).position.position),
+             Trapdoor(*random_pos(start_pos.size_of_room).position.position),
+             Enemy(*random_pos(start_pos.size_of_room).position.position),
+             Enemy(*random_pos(start_pos.size_of_room).position.position),
+             Enemy(*random_pos(start_pos.size_of_room).position.position),
+             Enemy(*random_pos(start_pos.size_of_room).position.position),
+             Enemy(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Shop(*random_pos(start_pos.size_of_room).position.position),
+             Shop(*random_pos(start_pos.size_of_room).position.position)]
 
 
 def on_move():
@@ -124,11 +166,8 @@ def on_move():
 
 
 print(f'The room is {temp}, {brightness}, and there might be a trap!\n')
-if brightness == 'bright':
-    print('The positions of random things are: ')
-    print(", ".join(map(str, list_of_positions)))
-else:
-    print(f'The room is {brightness}, making it impossible to see anything of interest')
+print('The positions of random things are: ')
+print(", ".join(map(str, list_of_positions)))
 print(
     f'\nYou start in a room that is\033[32;10m {start_pos.size_of_room}\033[30;0m tiles wide and\033[32;10m'
     f' {start_pos.size_of_room}\033[30;0m tiles high \n'

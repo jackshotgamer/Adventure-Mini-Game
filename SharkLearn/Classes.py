@@ -23,11 +23,19 @@ enemy_possibilities_attack = (
 )
 
 
+player_possibilities_attack = [
+    2,
+    3,
+    5,
+    7
+]
+
+
 enemy_possibilities_health = (
-    40,
     60,
     45,
-    50
+    50,
+    55
 )
 
 death_possibilities = (
@@ -69,24 +77,28 @@ xp_possibilities = (
 )
 
 gold_possibilities = (
-    5,
-    10,
-    15,
+    20,
     25,
+    40,
     50,
     75,
-    80
+    90,
+    110
 )
 
 
 def check_xp():
-    if AdventureLevels.globalxp >= AdventureLevels.prev_req_xp * 1.2:
-        print(f'You leveled up, you are now level {AdventureLevels.globallevel + 1}')
-        AdventureLevels.prev_req_xp *= 1.2
-        AdventureLevels.globallevel += 1
-        save_data()
-    else:
-        print(f'You need {int((AdventureLevels.prev_req_xp * 1.2)) - AdventureLevels.globalxp} more xp to level up')
+    while True:
+        if AdventureLevels.globalxp >= AdventureLevels.prev_req_xp * 1.5:
+            print(f'You leveled up, you are now level {AdventureLevels.globallevel + 1}')
+            AdventureLevels.prev_req_xp *= 1.5
+            AdventureLevels.globallevel += 1
+            save_data()
+        else:
+            print(f'You need '
+                  f'{int((AdventureLevels.prev_req_xp * 1.5) + 0.9999999999999999999999999) - AdventureLevels.globalxp}'
+                  f' more xp to level up')
+            return
 
 
 def save_data():
@@ -123,7 +135,7 @@ def random_loot(loot_choice=None):
             save_data()
         elif loot == 'junk':
             junk = (
-                'a can of beans.',
+                'a empty tin can.',
                 'a rotten banana.',
                 'a skull.',
                 'some bones and a fake piece of gold.',
@@ -198,7 +210,7 @@ class Enemy(Tile):
                 f'{" or ".join(map(str, enemy_possibilities_attack))} damage')
             player_health = 50
             while enemy_health > 0:
-                player_attack = random.choice(enemy_possibilities_attack)
+                player_attack = random.choice(player_possibilities_attack)
                 enemy_attack = random.choice(enemy_possibilities_attack)
                 time.sleep(1.5)
                 player_health -= enemy_attack
@@ -228,16 +240,93 @@ class Trapdoor(Tile):
         if exit_ == 1:
             xp_gained = random.choices(xp_possibilities, weights=(14, 10, 5, 3, 1), k=2)
             AdventureLevels.globalxp += sum(xp_gained)
-            save_data()
             print(f'You gain {sum(xp_gained)} xp, you now have {AdventureLevels.globalxp} xp.')
             save_data()
-
+            check_xp()
             sys.exit(100)
 
         elif exit_ == 0:
             print(f'But you fumbled and fell in head first, you cracked your skull!')
             print('\tYOU\033[31;10m DIED!\033[30;0m ')
             sys.exit(-100)
+
+
+class Shop(Tile):
+    def __init__(self, x, y):
+        super().__init__(x, y)
+        self.foo = Shopping()
+
+    def on_enter(self, name):
+        print('You found the shop!')
+        print(f'Welcome to the shop, you have {AdventureLevels.globalgold} gold to spend!')
+        time.sleep(0.8)
+        items = [
+            'Rusty Knife = 50 Gold',
+            'Iron Knife = 100 Gold',
+            'Iron Short-sword = 250 Gold',
+            'Iron Broad-sword = 500 Gold'
+        ]
+        print(f'\nThe items and gear you can buy are: ')
+        for f in items:
+            print(f)
+            time.sleep(1)
+        self.foo.item_choose()
+
+
+class Shopping:
+    def __init__(self):
+        self.bought = False
+
+    def item_choose(self):
+        self.item_choice = input('\nEnter 1 for Rusty Knife.\nEnter 2 for Iron Knife.\nEnter 3 for Iron Short-sword.'
+                                 '\nEnter 4 for Iron Broad-sword.\n> ')
+        if self.item_choice == '1':
+            name = 'Rusty_Knife'
+            damage1 = 3
+            damage2 = 8
+            cost = 50
+        elif self.item_choice == '2':
+            name = 'Iron_knife'
+            damage1 = 4
+            damage2 = 9
+            cost = 100
+        elif self.item_choice == '3':
+            name = 'Iron Short-Sword'
+            damage1 = 6
+            damage2 = 11
+            cost = 250
+        elif self.item_choice == '4':
+            name = 'Iron Broad-Sword'
+            damage1 = 10
+            damage2 = 17
+            cost = 500
+        else:
+            print('Incorrect number, please leave then re-enter this tile to refresh the shop.')
+            return
+        purchase = Weapon(name, cost, damage1, damage2)
+        purchase.buy()
+
+
+class Weapon:
+    def __init__(self, name, cost, damage1, damage2):
+        self.damage2 = damage2
+        self.damage1 = damage1
+        self.cost = cost
+        self.name = name
+
+    @property
+    def can_buy(self):
+        return AdventureLevels.globalgold >= self.cost
+
+    def buy(self):
+        if self.can_buy:
+            print(f'Successfully bought {self.name} for {self.cost}!')
+            AdventureLevels.globalgold -= self.cost
+            global player_possibilities_attack
+            player_possibilities_attack = [*range(self.damage1, self.damage2 + 1)]
+            save_data()
+        else:
+            print(f'You do not have enough gold, you need {self.cost - AdventureLevels.globalgold} more gold.')
 
 
 class Position:
