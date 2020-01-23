@@ -2,7 +2,7 @@ import random
 import time
 import sys
 from SharkLearn import AdventureLevels
-from SharkLearn.Classes import RandomPos, pl2, pl1, pl3, pl4, start_pos, Trap, Trapdoor, Enemy, Loot, Shop
+from SharkLearn.Classes import RandomPos, default, pl2, pl1, pl3, pl4, start_pos, Trap, Trapdoor, Enemy, Loot, Shop
 
 list_of_positions = []
 
@@ -18,34 +18,35 @@ def random_pos(size_of_rooms):
             return random_p
 
 
-# Player Selection
+# Player Selection ( Not Ready! Temp Solution! )
+player_select_ready = False
+if player_select_ready:
+    player_selection = input("Select the number of a player:\n\t\033[1;34;10m"
+                             "1.\033[0;10m jack\n\t\033[1;34;10m"
+                             "2.\033[0;10m Sharkbound\n\t\033[1;34;10m"
+                             "3.\033[0;10m Psuedo\n\t\033[1;34;10m"
+                             "4.\033[0;10m Anna\n> ")
+    if player_selection == '1':
+        player = pl1
 
-player_selection = input("Select the number of a player:\n\t\033[1;34;10m"
-                         "1.\033[0;10m jack\n\t\033[1;34;10m"
-                         "2.\033[0;10m Sharkbound\n\t\033[1;34;10m"
-                         "3.\033[0;10m Psuedo\n\t\033[1;34;10m"
-                         "4.\033[0;10m Anna\n> ")
-if player_selection == '1':
-    player_level = AdventureLevels.globallevel
-    player = pl1
+    elif player_selection == '2':
+        player = pl2
 
-elif player_selection == '2':
-    player_level = AdventureLevels.globallevel
-    player = pl2
+    elif player_selection == '3':
+        player = pl3
 
-elif player_selection == '3':
-    player_level = AdventureLevels.globallevel
-    player = pl3
+    elif player_selection == '4':
+        player = pl4
 
-elif player_selection == '4':
-    player_level = AdventureLevels.globallevel
-    player = pl4
-
+    else:
+        print('Invalid Number')
+        sys.exit(25)
 else:
-    print('Invalid Number')
-    sys.exit(25)
+    player = default
 
 # Starting text and level
+
+player_level = AdventureLevels.globallevel
 
 print('You wake up in a dark room, with very faint torches on the walls, you stand up,'
       ' and walk through the door-frame in-front of you.....'
@@ -146,6 +147,65 @@ elif player.level <= 20:
              Loot(*random_pos(start_pos.size_of_room).position.position),
              Loot(*random_pos(start_pos.size_of_room).position.position),
              Loot(*random_pos(start_pos.size_of_room).position.position),
+             Shop(*random_pos(start_pos.size_of_room).position.position),
+             Shop(*random_pos(start_pos.size_of_room).position.position)]
+elif player.level < 40:
+    tiles = [Trap(*random_pos(start_pos.size_of_room).position.position),
+             Trap(*random_pos(start_pos.size_of_room).position.position),
+             Trap(*random_pos(start_pos.size_of_room).position.position),
+             Trap(*random_pos(start_pos.size_of_room).position.position),
+             Trap(*random_pos(start_pos.size_of_room).position.position),
+             Trap(*random_pos(start_pos.size_of_room).position.position),
+             Trapdoor(*random_pos(start_pos.size_of_room).position.position),
+             Trapdoor(*random_pos(start_pos.size_of_room).position.position),
+             Enemy(*random_pos(start_pos.size_of_room).position.position),
+             Enemy(*random_pos(start_pos.size_of_room).position.position),
+             Enemy(*random_pos(start_pos.size_of_room).position.position),
+             Enemy(*random_pos(start_pos.size_of_room).position.position),
+             Enemy(*random_pos(start_pos.size_of_room).position.position),
+             Enemy(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Shop(*random_pos(start_pos.size_of_room).position.position),
+             Shop(*random_pos(start_pos.size_of_room).position.position),
+             Shop(*random_pos(start_pos.size_of_room).position.position)]
+elif player.level >= 40:
+    tiles = [Trap(*random_pos(start_pos.size_of_room).position.position),
+             Trap(*random_pos(start_pos.size_of_room).position.position),
+             Trap(*random_pos(start_pos.size_of_room).position.position),
+             Trap(*random_pos(start_pos.size_of_room).position.position),
+             Trap(*random_pos(start_pos.size_of_room).position.position),
+             Trap(*random_pos(start_pos.size_of_room).position.position),
+             Trap(*random_pos(start_pos.size_of_room).position.position),
+             Trapdoor(*random_pos(start_pos.size_of_room).position.position),
+             Trapdoor(*random_pos(start_pos.size_of_room).position.position),
+             Enemy(*random_pos(start_pos.size_of_room).position.position),
+             Enemy(*random_pos(start_pos.size_of_room).position.position),
+             Enemy(*random_pos(start_pos.size_of_room).position.position),
+             Enemy(*random_pos(start_pos.size_of_room).position.position),
+             Enemy(*random_pos(start_pos.size_of_room).position.position),
+             Enemy(*random_pos(start_pos.size_of_room).position.position),
+             Enemy(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Loot(*random_pos(start_pos.size_of_room).position.position),
+             Shop(*random_pos(start_pos.size_of_room).position.position),
+             Shop(*random_pos(start_pos.size_of_room).position.position),
              Shop(*random_pos(start_pos.size_of_room).position.position),
              Shop(*random_pos(start_pos.size_of_room).position.position)]
 

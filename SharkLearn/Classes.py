@@ -225,7 +225,7 @@ class Enemy(Tile):
                     print('AAGGHHHHhhhhhh...... \n'
                           '\033[31;10m You died \033[30;0m ')
                     sys.exit(15)
-            print(f'You killed the {self.enemy_name}, congratulation! Keep looking for the exit.')
+            print(f'You killed the {self.enemy_name}, congratulations! Keep looking for the exit.')
             gold_gained = random.choices(gold_possibilities, weights=(7, 6, 5, 4, 3, 2, 1), k=1)
             AdventureLevels.globalgold += gold_gained[0]
             print(f'You gained {gold_gained[0]} gold! You now have {AdventureLevels.globalgold} gold!')
@@ -281,12 +281,12 @@ class Shopping:
         self.item_choice = input('\nEnter 1 for Rusty Knife.\nEnter 2 for Iron Knife.\nEnter 3 for Iron Short-sword.'
                                  '\nEnter 4 for Iron Broad-sword.\n> ')
         if self.item_choice == '1':
-            name = 'Rusty_Knife'
+            name = 'Rusty Knife'
             damage1 = 3
             damage2 = 8
             cost = 50
         elif self.item_choice == '2':
-            name = 'Iron_knife'
+            name = 'Iron knife'
             damage1 = 4
             damage2 = 9
             cost = 100
@@ -372,6 +372,10 @@ class SizeAndPos:
 
 start_pos = SizeAndPos(17, 35)
 pos_player = Position(start_pos.starting_x, start_pos.starting_y)
+
+# Ignore Below!
+
+default = Player('Player', 'Password')
 pl1 = Player('jack', 'main', )
 pl2 = Player('Sharkbound', 'Shark')
 pl3 = Player('Psuedo', 'lmao')
