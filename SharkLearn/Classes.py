@@ -87,13 +87,13 @@ gold_possibilities = (
 )
 
 
-def check_xp():
+def check_xp(charac_name):
     while True:
         if AdventureLevels.globalxp >= AdventureLevels.prev_req_xp * 1.5:
             print(f'You leveled up, you are now level {AdventureLevels.globallevel + 1}')
             AdventureLevels.prev_req_xp *= 1.5
             AdventureLevels.globallevel += 1
-            save_data()
+            AdventureLevels.save_charac(charac_name)
         else:
             print(f'You need '
                   f'{int((AdventureLevels.prev_req_xp * 1.5) + 0.9999999999999999999999999) - AdventureLevels.globalxp}'
@@ -101,18 +101,8 @@ def check_xp():
             return
 
 
-def save_data():
-    saved_data = (
-        AdventureLevels.globallevel,
-        AdventureLevels.globalgold,
-        AdventureLevels.globalxp,
-        AdventureLevels.prev_req_xp
-    )
-    with open('saved_data.txt', 'w') as file1:
-        file1.write(json.dumps(saved_data))
 
-
-def random_loot(loot_choice=None):
+def random_loot(charac_name, loot_choice=None):
     if loot_choice is None:
         loot_table = (
             'xp',
@@ -126,13 +116,13 @@ def random_loot(loot_choice=None):
             xp_amount = random.choice(xp_possibilities)
             print(f'You found an experience potion, it contains a total of {xp_amount} xp!')
             AdventureLevels.globalxp += xp_amount
-            save_data()
-            check_xp()
+            AdventureLevels.save_charac(charac_name)
+            check_xp(charac_name)
         elif loot == 'gold':
             gold_amount = random.choice(gold_possibilities)
             print(f'You found a pile of gold, it contains a total of {gold_amount} gold!')
-            AdventureLevels.globalxp += gold_amount
-            save_data()
+            AdventureLevels.globalgold += gold_amount
+            AdventureLevels.save_charac(charac_name)
         elif loot == 'junk':
             junk = (
                 'a empty tin can.',
@@ -144,14 +134,13 @@ def random_loot(loot_choice=None):
             print(f'You found {random.choice(junk)} You throw it away.')
         elif loot == 'item':
             print(f'You found N/A')
-            save_data()
+            AdventureLevels.save_charac(charac_name)
 
 
 class Player:
-    def __init__(self, name, pw):
+    def __init__(self, name):
         self.level = AdventureLevels.globallevel
         self.name = name
-        self.pw = pw
         pos = Position(start_pos.starting_x, start_pos.starting_y)
         self.position = pos
 
@@ -189,7 +178,7 @@ class Loot(Tile):
             print('You discover that you have already opened this chest!')
         else:
             print(f'You found a chest, you approach it carefully...')
-            random_loot()
+            random_loot(AdventureLevels.character_name)
             self.entered = True
 
 
@@ -229,7 +218,7 @@ class Enemy(Tile):
             gold_gained = random.choices(gold_possibilities, weights=(7, 6, 5, 4, 3, 2, 1), k=1)
             AdventureLevels.globalgold += gold_gained[0]
             print(f'You gained {gold_gained[0]} gold! You now have {AdventureLevels.globalgold} gold!')
-            save_data()
+            AdventureLevels.save_charac(AdventureLevels.character_name)
             self.entered = True
 
 
@@ -241,8 +230,8 @@ class Trapdoor(Tile):
             xp_gained = random.choices(xp_possibilities, weights=(14, 10, 5, 3, 1), k=2)
             AdventureLevels.globalxp += sum(xp_gained)
             print(f'You gain {sum(xp_gained)} xp, you now have {AdventureLevels.globalxp} xp.')
-            save_data()
-            check_xp()
+            AdventureLevels.save_charac(AdventureLevels.character_name)
+            check_xp(AdventureLevels.character_name)
             sys.exit(100)
 
         elif exit_ == 0:
@@ -279,7 +268,7 @@ class Shopping:
 
     def item_choose(self):
         self.item_choice = input('\nEnter 1 for Rusty Knife.\nEnter 2 for Iron Knife.\nEnter 3 for Iron Short-sword.'
-                                 '\nEnter 4 for Iron Broad-sword.\n> ')
+                                 '\nEnter 4 for Iron Broad-sword.\nEnter 5 to Exit.\n> ')
         if self.item_choice == '1':
             name = 'Rusty Knife'
             damage1 = 3
@@ -300,6 +289,9 @@ class Shopping:
             damage1 = 10
             damage2 = 17
             cost = 500
+        elif self.item_choice == '5':
+            print('Goodbye, if you ever want something else, just pop by again!')
+            return
         else:
             print('Incorrect number, please leave then re-enter this tile to refresh the shop.')
             return
@@ -324,7 +316,7 @@ class Weapon:
             AdventureLevels.globalgold -= self.cost
             global player_possibilities_attack
             player_possibilities_attack = [*range(self.damage1, self.damage2 + 1)]
-            save_data()
+            AdventureLevels.save_charac(AdventureLevels.character_name)
         else:
             print(f'You do not have enough gold, you need {self.cost - AdventureLevels.globalgold} more gold.')
 
@@ -373,10 +365,3 @@ class SizeAndPos:
 start_pos = SizeAndPos(17, 35)
 pos_player = Position(start_pos.starting_x, start_pos.starting_y)
 
-# Ignore Below!
-
-default = Player('Player', 'Password')
-pl1 = Player('jack', 'main', )
-pl2 = Player('Sharkbound', 'Shark')
-pl3 = Player('Psuedo', 'lmao')
-pl4 = Player('Anna', '123')

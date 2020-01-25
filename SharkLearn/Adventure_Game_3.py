@@ -2,7 +2,7 @@ import random
 import time
 import sys
 from SharkLearn import AdventureLevels
-from SharkLearn.Classes import RandomPos, default, pl2, pl1, pl3, pl4, start_pos, Trap, Trapdoor, Enemy, Loot, Shop
+from SharkLearn.Classes import RandomPos, start_pos, Trap, Trapdoor, Enemy, Loot, Shop, Player
 
 list_of_positions = []
 
@@ -19,30 +19,10 @@ def random_pos(size_of_rooms):
 
 
 # Player Selection ( Not Ready! Temp Solution! )
-player_select_ready = False
-if player_select_ready:
-    player_selection = input("Select the number of a player:\n\t\033[1;34;10m"
-                             "1.\033[0;10m jack\n\t\033[1;34;10m"
-                             "2.\033[0;10m Sharkbound\n\t\033[1;34;10m"
-                             "3.\033[0;10m Psuedo\n\t\033[1;34;10m"
-                             "4.\033[0;10m Anna\n> ")
-    if player_selection == '1':
-        player = pl1
 
-    elif player_selection == '2':
-        player = pl2
-
-    elif player_selection == '3':
-        player = pl3
-
-    elif player_selection == '4':
-        player = pl4
-
-    else:
-        print('Invalid Number')
-        sys.exit(25)
-else:
-    player = default
+player_selection = input("Please input your character name: ")
+AdventureLevels.load_charac(player_selection)
+player = Player(player_selection)
 
 # Starting text and level
 
@@ -316,7 +296,8 @@ while in_room:
                 sys.exit(20)
     elif w_a_s_d == '/size':
         print(
-            f'The room size is \033[32;10m{start_pos.size_of_room}\033[30;0m wide and \033[32;10m{start_pos.size_of_room}\033[30;0m high.')
+            f'The room size is \033[32;10m{start_pos.size_of_room}\033[30;0m wide and \033[32;10m'
+            f'{start_pos.size_of_room}\033[30;0m high.')
         print(
             f'\033[30;0m You are now x: \033[32;10m{player.position.x}\033[30;0m, y: \033[32;10m{player.position.y}'
             f'\033[30;0m')
