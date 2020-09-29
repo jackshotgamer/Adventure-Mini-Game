@@ -3,7 +3,6 @@ import random
 from random import randint
 import time
 import sys
-import json
 
 enemy_possibilities_names = (
     'Ogre',
@@ -90,12 +89,12 @@ gold_possibilities = (
 def check_xp(charac_name):
     while True:
         if AdventureLevels.globalxp >= AdventureLevels.prev_req_xp * 1.5:
-            print(f'You leveled up, you are now level {AdventureLevels.globallevel + 1}')
+            print(f'{charac_name} leveled up, {charac_name} is now level {AdventureLevels.globallevel + 1}')
             AdventureLevels.prev_req_xp *= 1.5
             AdventureLevels.globallevel += 1
             AdventureLevels.save_charac(charac_name)
         else:
-            print(f'You need '
+            print(f'{charac_name} need '
                   f'{int((AdventureLevels.prev_req_xp * 1.5) + 0.9999999999999999999999999) - AdventureLevels.globalxp}'
                   f' more xp to level up')
             return
@@ -133,7 +132,34 @@ def random_loot(charac_name, loot_choice=None):
             )
             print(f'You found {random.choice(junk)} You throw it away.')
         elif loot == 'item':
-            print(f'You found N/A')
+            print(f'You found a weapon!')
+            item_choice = str(random.choices((1, 2, 3, 4), k=1, weights=(6, 4, 2, 1))[0])
+            if item_choice == '1':
+                name = 'Rusty Knife'
+                damage1 = 3
+                damage2 = 8
+                cost = 50
+                AdventureLevels.globalgold += 50
+            elif item_choice == '2':
+                name = 'Iron knife'
+                damage1 = 4
+                damage2 = 9
+                cost = 100
+                AdventureLevels.globalgold += 100
+            elif item_choice == '3':
+                name = 'Iron Short-Sword'
+                damage1 = 6
+                damage2 = 11
+                cost = 250
+                AdventureLevels.globalgold += 250
+            else:
+                name = 'Iron Broad-Sword'
+                damage1 = 10
+                damage2 = 17
+                cost = 500
+                AdventureLevels.globalgold += 500
+            purchase = Weapon(name, cost, damage1, damage2)
+            purchase.buy()
             AdventureLevels.save_charac(charac_name)
 
 
@@ -200,11 +226,17 @@ class Enemy(Tile):
             player_health = 50
             while enemy_health > 0:
                 player_attack = random.choice(player_possibilities_attack)
+                chance = random.random()
+                if chance <= 1 / 6:
+                    player_attack = int(player_attack * 1.5)
+                    critical = True
+                else:
+                    critical = False
                 enemy_attack = random.choice(enemy_possibilities_attack)
                 time.sleep(1.5)
                 player_health -= enemy_attack
                 enemy_health -= player_attack
-                print(f'You did {player_attack} damage, but received {enemy_attack} in return!\n'
+                print(f'You did {player_attack} damage {"which was a CRITICAL HIT"if critical else""}, but received {enemy_attack} in return!\n'
                       f'You now have {player_health} health, the  {self.enemy_name} has {enemy_health} health!\n')
                 time.sleep(1.5)
                 if player_health <= 0 and enemy_health <= 0:
@@ -364,4 +396,3 @@ class SizeAndPos:
 
 start_pos = SizeAndPos(17, 35)
 pos_player = Position(start_pos.starting_x, start_pos.starting_y)
-

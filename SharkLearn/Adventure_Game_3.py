@@ -42,7 +42,8 @@ print('\nThe controls are: \n\033[34;10m w\033[30;0m (up),\033[34;10m a\033[30;0
       '\033[34;10m s\033[30;0m (down),\033[34;10m d\033[30;0m (right) \n'
       '\nThe commands you can use are: \n\033[34;10m /size\033[30;0m (Gets room size)\n'
       '\033[34;10m /help\033[30;0m (Shows the commands)\n'
-      '\033[34;10m /positions\033[30;0m (Lists the random positions)\n')
+      '\033[34;10m /positions\033[30;0m (Lists the random positions)\n'
+      '\033[34;10m /leaderboard\033[30;0m (Shows the leaderboard)\n')
 time.sleep(2.3)
 
 # Temperature
@@ -156,7 +157,7 @@ elif player.level < 40:
              Shop(*random_pos(start_pos.size_of_room).position.position),
              Shop(*random_pos(start_pos.size_of_room).position.position),
              Shop(*random_pos(start_pos.size_of_room).position.position)]
-elif player.level >= 40:
+else:
     tiles = [Trap(*random_pos(start_pos.size_of_room).position.position),
              Trap(*random_pos(start_pos.size_of_room).position.position),
              Trap(*random_pos(start_pos.size_of_room).position.position),
@@ -188,6 +189,10 @@ elif player.level >= 40:
              Shop(*random_pos(start_pos.size_of_room).position.position),
              Shop(*random_pos(start_pos.size_of_room).position.position),
              Shop(*random_pos(start_pos.size_of_room).position.position)]
+shops = []
+for a in tiles:
+    if isinstance(a, Shop):
+        shops.append(a.position)
 
 
 def on_move():
@@ -208,6 +213,7 @@ def on_move():
 print(f'The room is {temp}, {brightness}, and there might be a trap!\n')
 print('The positions of random things are: ')
 print(", ".join(map(str, list_of_positions)))
+print(f'The Shops are at {", ".join(map(str , shops))}')
 print(
     f'\nYou start in a room that is\033[32;10m {start_pos.size_of_room}\033[30;0m tiles wide and\033[32;10m'
     f' {start_pos.size_of_room}\033[30;0m tiles high \n'
@@ -307,7 +313,8 @@ while in_room:
               '\033[34;10m s\033[30;0m (down),\033[34;10m d\033[30;0m (right)'
               '\nThe commands you can use are: \n\033[34;10m /size\033[30;0m (Gets room size)'
               '\033[34;10m /help\033[30;0m (Shows the commands)\n'
-              '\033[34;10m /positions\033[30;0m (Lists the random positions)\n')
+              '\033[34;10m /positions\033[30;0m (Lists the random positions)\n'
+              '\033[34;10m /leaderboard\033[30;0m (Shows the leaderboard)\n')
         print(
             f'\033[30;0m You are now x: \033[32;10m{player.position.x}\033[30;0m, y: \033[32;10m{player.position.y}'
             f'\033[30;0m')
@@ -315,15 +322,23 @@ while in_room:
     elif w_a_s_d == '/positions':
         if brightness == 'bright':
             print('\nThe positions of random things are: ')
-            print(", ".join(map(str, list_of_positions)), '\n')
+            print(", ".join(map(str, list_of_positions)), '')
+            print(f'The Shops are at {", ".join(map(str, shops))}\n')
             print(
                 f'\033[30;0m You are now x: \033[32;10m{player.position.x}\033[30;0m, y: \033[32;10m{player.position.y}'
                 f'\033[30;0m')
         else:
             print(f'The room is {brightness}, and you cannot make out anything')
+            print(f'The Shops are at {", ".join(map(str, shops))}\n')
             print(
                 f'\033[30;0m You are now x: \033[32;10m{player.position.x}\033[30;0m, y: \033[32;10m{player.position.y}'
                 f'\033[30;0m')
+        continue
+    elif w_a_s_d == '/leaderboard':
+        AdventureLevels.leaderboards_load_save()
+        print(
+            f'\033[30;0m You are now x: \033[32;10m{player.position.x}\033[30;0m, y: \033[32;10m{player.position.y}'
+            f'\033[30;0m')
         continue
     else:
         print('\nInvalid Control')

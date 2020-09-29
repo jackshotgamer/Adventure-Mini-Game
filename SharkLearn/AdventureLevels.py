@@ -25,23 +25,29 @@ def save_charac(charac_name):
         globalxp,
         prev_req_xp
     )
-    with open(pathlib.Path(f'Player_Saves\\{charac_name}.txt'), 'w') as file1:
-        file1.write(json.dumps(saved_data))
+    with open(pathlib.Path(f'Player_Saves\\{charac_name}.txt'), 'w') as file:
+        file.write(json.dumps(saved_data))
 
 
 def leaderboards_load_save():
     list_ = os.listdir('C:/Users/jacks/PycharmProjects/Adventure-Mini-Game/SharkLearn/Player_Saves')
-    number_of_files = len(list_)
-    for i in range(number_of_files):
-        with open(pathlib.Path(f'Player_Saves/'), 'r') as file3:
-            data = json.load(file3)
-        with open(pathlib.Path(f'leaderboards.txt'), 'r+') as file4:
-            file4.write(json.dumps(data))
-    with open(pathlib.Path(f'leaderboards.txt'), 'r') as file5:
-        data = json.load(file5)
-        print(f'1: {data}')
-        print('Highest leveled played: ')
-leaderboards_load_save()
+    lead_lvl = -1
+    lead_lvl_name = f'Default: {lead_lvl}'
+    lead_gold = -1
+    lead_gold_name = f'Default: {lead_gold}'
+    for i in list_:
+        path = pathlib.Path(f'Player_Saves/{i}')
+        with open(path, 'r') as file:
+            data = json.load(file)
+            if lead_lvl < data[0]:
+                lead_lvl = data[0]
+                lead_lvl_name = f'Highest Leveled Player: {path.stem} with {lead_lvl} levels!'
+            if lead_gold < data[1]:
+                lead_gold = data[1]
+                lead_gold_name = f'Richest Player: {path.stem} with {lead_gold} gold!'
+    print(f'\nLeaderboards:\n{lead_lvl_name}\n{lead_gold_name}')
+
+
 
 character_name = None
 globallevel = None
