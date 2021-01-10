@@ -11,7 +11,8 @@ enemy_possibilities_names = (
     'Zombie',
     'Mutated Monster',
     'Goblin',
-    'Gremlin Child'
+    'Gremlin Child',
+    'Karen'
 )
 
 enemy_possibilities_attack = (

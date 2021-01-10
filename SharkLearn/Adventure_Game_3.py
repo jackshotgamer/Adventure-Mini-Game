@@ -14,7 +14,7 @@ def random_pos(size_of_rooms):
             continue
         else:
             list_of_positions.append(random_p.position)
-            random.shuffle(list_of_positions)
+            #random.shuffle(list_of_positions)
             return random_p
 
 
