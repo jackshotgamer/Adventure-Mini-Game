@@ -95,7 +95,7 @@ def check_xp(charac_name):
             AdventureLevels.globallevel += 1
             AdventureLevels.save_charac(charac_name)
         else:
-            print(f'{charac_name} need '
+            print(f'{charac_name} needs '
                   f'{int((AdventureLevels.prev_req_xp * 1.5) + 0.9999999999999999999999999) - AdventureLevels.globalxp}'
                   f' more xp to level up')
             return
@@ -283,10 +283,10 @@ class Shop(Tile):
         print(f'Welcome to the shop, you have {AdventureLevels.globalgold} gold to spend!')
         time.sleep(0.8)
         items = [
-            'Rusty Knife = 50 Gold',
-            'Iron Knife = 100 Gold',
-            'Iron Short-sword = 250 Gold',
-            'Iron Broad-sword = 500 Gold'
+            'Rusty Knife (3 - 8 dmg) = 25 Gold',
+            'Iron Knife (4 - 9 dmg) = 60 Gold',
+            'Iron Short-sword (6 - 11 dmg) = 100 Gold',
+            'Iron Broad-sword (10 - 17 dmg) = 200 Gold'
         ]
         print(f'\nThe items and gear you can buy are: ')
         for f in items:
@@ -306,22 +306,22 @@ class Shopping:
             name = 'Rusty Knife'
             damage1 = 3
             damage2 = 8
-            cost = 50
+            cost = 25
         elif self.item_choice == '2':
             name = 'Iron knife'
             damage1 = 4
             damage2 = 9
-            cost = 100
+            cost = 60
         elif self.item_choice == '3':
             name = 'Iron Short-Sword'
             damage1 = 6
             damage2 = 11
-            cost = 250
+            cost = 100
         elif self.item_choice == '4':
             name = 'Iron Broad-Sword'
             damage1 = 10
             damage2 = 17
-            cost = 500
+            cost = 200
         elif self.item_choice == '5':
             print('Goodbye, if you ever want something else, just pop by again!')
             return

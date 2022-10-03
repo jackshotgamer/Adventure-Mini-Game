@@ -2,7 +2,7 @@ import random
 import time
 import sys
 from SharkLearn import AdventureLevels
-from SharkLearn.Classes import RandomPos, start_pos, Trap, Trapdoor, Enemy, Loot, Shop, Player
+from SharkLearn.Classes import RandomPos, start_pos, Trap, Trapdoor, Enemy, Loot, Shop, Player#
 
 list_of_positions = []
 
@@ -14,7 +14,7 @@ def random_pos(size_of_rooms):
             continue
         else:
             list_of_positions.append(random_p.position)
-            #random.shuffle(list_of_positions)
+            # random.shuffle(list_of_positions)
             return random_p
 
 
